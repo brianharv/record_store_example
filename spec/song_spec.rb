@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe '#Song' do
+  before(:each) do
+    @album = Album.new({:name => "Giant Steps", :id => nil})
+    @album.save()
+  end  
 
 
   describe('#==') do
