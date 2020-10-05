@@ -1,16 +1,7 @@
-require 'rspec'
-require 'song'
-require 'album'
-require 'pry'
+require 'spec_helper'
 
 describe '#Song' do
 
-  before(:each) do
-    Album.clear
-    Song.clear
-    @album = Album.new({:name => "Giant Steps", :id => nil})
-    @album.save()
-  end
 
   describe('#==') do
     it("is the same song if it has the same attributes as another song") do
