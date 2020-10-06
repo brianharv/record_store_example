@@ -38,14 +38,15 @@ class Artist
     Artist.new({:name => name, :id => id})
   end
 
-  def update(attributes)
+  def update(attributes) #include EXISTS in if statement
     if (attributes.has_key?(:name)) && (attributes.fetch(:name) != nil)
-      @name = attributes.fetch(:name)
-      DB.exec("UPDATE artists SET name = '#{@name}' WHERE id = #{@id};")
+      @name = attributes.fetch(:name) # if name exists in the attributes hash, we will retrieve it.
+      DB.exec("UPDATE artists SET name = '#{@name}' WHERE id = #{@id};") #changing the name of the artist at id location.
     elsif (attributes.has_key?(:album_name)) && (attributes.fetch(:album_name) != nil)
-      album_name = attributes.fetch(:album_name)
-      album = DB.exec("SELECT * FROM albums WHERE lower(name)='#{album_name.downcase}';").first
-      if album != nil
+      album_name = attributes.fetch(:album_name) # else if retrieve album name if it exists
+      album = DB.exec("SELECT * FROM albums WHERE lower(name)='#{album_name.downcase}';").first #matching a case insensitive query to database string
+      album_artists = DB.exec("SELECT album_id FROM albums_artists WHERE NOT EXISTS (SELECT artist_id FROM albums_artists)").first # this lets us select an album where there is no artist. This is because the association has not yet been made.
+      if album != nil && album_artists == nil
         DB.exec("INSERT INTO albums_artists (album_id, artist_id) VALUES (#{album['id'].to_i}, #{@id});")
       end
     end
@@ -68,7 +69,15 @@ class Artist
     albums  
   end
 
-  # def songs
+end
+
+# def songs
   #   Song.find_by_artist(self.id)
   # end
-end
+
+  # albuma_artsts = DB>exec("SELECT artist_id")
+
+#sql statement to select( to find artist id), 
+
+# we dont want dublicate albums in our join table. album_artists is a variable that is a album id from our join table where there is Not a artist id in the join table 
+
